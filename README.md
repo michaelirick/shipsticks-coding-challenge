@@ -16,9 +16,3 @@ This will launch three containers (the rails api app, mongodb instance, and the 
 
 ## See it in Action
 Access the home page at http://localhost:3000
-
-## Stay in touch
-
-- Author - [Donald Granados](https://linkedin.com/in/donaldgranados)
-- Github - https://github.com/donaldG21
-- Email  - donald.g@me.com
