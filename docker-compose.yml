@@ -1,0 +1,47 @@
+version: "3.8"
+x-backend: &x-backend
+  build:
+      context: .
+      dockerfile: ./.docker/Dockerfile
+      target: machine_build
+
+services:
+  mongodb:
+    image: mongo:latest
+    env_file:
+      - .env
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb-data:/data/db
+
+  rails-api:
+    <<: *x-backend
+    entrypoint: ./.docker/docker-rails.sh
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - mongodb
+  vite:
+    <<: *x-backend
+    entrypoint: ./.docker/docker-vite.sh
+    tty: true
+    ports:
+      - "3036:3036"
+    environment:
+      DEBUG: '*vite*'
+      RAILS_ENV: development
+      VITE_RUBY_HOST: 0.0.0.0
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - rails-api
+
+volumes:
+  mongodb-data:
+  rails_log:
