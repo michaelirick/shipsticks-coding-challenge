@@ -1,7 +1,7 @@
 # ShipSticks Ruby on Rails Challenge
 
 ## Description
-Create a JSON REST-style API that processes and exposes data about company products.
+Review the Challenge document and fork off of this repo to complete your work.
 
 ## Installation
 Please have docker installed to run app with a single command.
