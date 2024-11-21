@@ -9,7 +9,7 @@ class ProductImportService
     products['products'].each do |row|
       Product.create!(
         name: row['name'],
-        product_type: row['type'],
+        type: row['type'],
         length: row['length'],
         width: row['width'],
         height: row['height'],
