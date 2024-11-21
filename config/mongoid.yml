@@ -178,8 +178,11 @@ test:
     default:
       database: shipsticks_test
       hosts:
-        - localhost:27017
+        - mongodb:27017
       options:
         read:
           mode: :primary
         max_pool_size: 1
+        user: 'root'
+        password: 'password'
+        auth_source: admin

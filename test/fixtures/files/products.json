@@ -1,0 +1,12 @@
+{
+  "products": [
+    {
+      "name": "Small Package",
+      "type": "Golf",
+      "length": 48,
+      "width": 14,
+      "height": 12,
+      "weight": 42
+    }
+  ]
+}
