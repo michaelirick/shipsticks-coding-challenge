@@ -9,6 +9,7 @@ gem "rails"
 gem "mongoid"
 gem "vite_rails"
 gem 'rack-cors'
+gem 'graphql'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -56,3 +57,4 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
 end
+gem "graphiql-rails", group: :development
