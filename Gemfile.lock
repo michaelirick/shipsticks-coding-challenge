@@ -68,6 +68,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
+    base64 (0.2.0)
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
@@ -90,8 +91,14 @@ GEM
       reline (>= 0.3.1)
     dry-cli (1.0.0)
     erubi (1.13.0)
+    fiber-storage (1.0.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    graphiql-rails (1.10.1)
+      railties
+    graphql (2.4.4)
+      base64
+      fiber-storage
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     io-console (0.6.0)
@@ -130,6 +137,8 @@ GEM
     nokogiri (1.16.7-aarch64-linux)
       racc (~> 1.4)
     nokogiri (1.16.7-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     public_suffix (5.0.1)
     puma (5.6.5)
@@ -219,11 +228,14 @@ GEM
 PLATFORMS
   aarch64-linux
   arm64-darwin-22
+  x86_64-linux
 
 DEPENDENCIES
   bootsnap
   capybara
   debug
+  graphiql-rails
+  graphql
   mongoid
   puma (~> 5.0)
   rack-cors
