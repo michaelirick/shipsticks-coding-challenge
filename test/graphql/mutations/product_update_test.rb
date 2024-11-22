@@ -1,4 +1,3 @@
-require 'pry'
 require 'test_helper'
 
 class ProductUpdateTest < ActionDispatch::IntegrationTest
