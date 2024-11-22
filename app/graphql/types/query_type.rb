@@ -30,5 +30,25 @@ module Types
     def products(type: nil, limit:, offset:)
       (type ? Product.where(type: type) : Product.all).limit(limit).offset(offset)
     end
+
+    # Field to find the closest matching product
+    field :closest_product, Types::ProductType, null: true do
+      description "Retrieve the closest matching product based on dimensions and weight"
+      argument :length, Integer, required: true, description: "The length of the product in inches"
+      argument :width, Integer, required: true, description: "The width of the product in inches"
+      argument :height, Integer, required: true, description: "The height of the product in inches"
+      argument :weight, Integer, required: true, description: "The weight of the product in pounds"
+    end
+
+    def closest_product(length:, width:, height:, weight:)
+      Product.all.min_by do |product|
+        (
+          (product.length - length).abs +
+          (product.width - width).abs +
+          (product.height - height).abs +
+          (product.weight - weight).abs
+        )
+      end
+    end    
   end
 end
