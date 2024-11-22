@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'pry'
+
 class SaveCalculatorResultTest < ActionDispatch::IntegrationTest
   setup do
     @mutation = <<~GRAPHQL
