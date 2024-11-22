@@ -1,5 +1,14 @@
 import React from "react";
-import { Item, ItemGroup, Button, Icon } from "semantic-ui-react"
+import {
+  Item,
+  ItemGroup,
+  Button,
+  Icon,
+  MessageItem, 
+  MessageList,
+  MessageHeader,
+  Message
+} from "semantic-ui-react"
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import useCsrf from "hooks/use_csrf";
@@ -22,7 +31,43 @@ const calculatorResultSaveQuery = `
   }
 `;
 
-const SelectedProduct = ({id, name, type, length, width, height, weight, dimensions}) => {
+interface ErrorsProps {
+  errors: Record<string, string>;
+}
+
+const Errors: React.FC<ErrorsProps> = ({ errors }) => {
+  return (
+    <Message negative>
+      <MessageHeader>Errors</MessageHeader>
+      <MessageList>
+        {Object.keys(errors).map((key) => {
+          return (
+            <MessageItem key={key}>{key}: {errors[key]}</MessageItem>
+          )
+        })}
+      </MessageList>
+    </Message>
+  )
+}
+
+interface SelectedProductProps {
+  id: string;
+  name: string;
+  type: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+  dimensions: {
+    length: number;
+    width: number;
+    height: number;
+    weight: number;
+  };
+}
+
+const SelectedProduct: React.FC<SelectedProductProps> = ({ id, name, type, length, width, height, weight, dimensions }) => {
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
   const mutation = useMutation({
     mutationFn: () => {
       return axios.post('/graphql', {
@@ -44,6 +89,9 @@ const SelectedProduct = ({id, name, type, length, width, height, weight, dimensi
           }
         }
       )
+    },
+    onError: (error: any) => {
+      setErrors(error.response.data.errors[0].extensions);
     }
   });
 
@@ -61,12 +109,12 @@ const SelectedProduct = ({id, name, type, length, width, height, weight, dimensi
           </Item.Description>
           <Item.Extra>
             {mutation.isPending && <p>Saving...</p>}
-            {mutation.isError && <p>Error saving results</p>}
+            {mutation.isError && <Errors errors={errors} />}
             {mutation.isSuccess && <p>Results saved</p>}
             {mutation.isIdle && (
               <Button primary floated='right' onClick={() => mutation.mutate()}>
+                <Icon name='save' />
                 Save Results
-                <Icon name='right save' />
               </Button>          
             )}
           </Item.Extra>

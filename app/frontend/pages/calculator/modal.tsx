@@ -9,9 +9,9 @@ import {
   Modal
 } from 'semantic-ui-react';
 import CalculatorForm from './form';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, UseMutateFunction } from '@tanstack/react-query';
 import useCsrf from 'hooks/use_csrf';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import SelectedProduct from './selected_product';
 
 const closestProductQuery = `
@@ -28,11 +28,34 @@ const closestProductQuery = `
   }
 `;
 
-const CalculatorModal = ({ open, setOpen }) => {
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [enteredDimensions, setEnteredDimensions] = useState(null);
-  const mutation = useMutation({
-    mutationFn: (dimensions) => {
+interface CalculatorModalProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface Dimensions {
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  type: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+}
+
+const CalculatorModal: React.FC<CalculatorModalProps> = ({ open, setOpen }) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [enteredDimensions, setEnteredDimensions] = useState<Dimensions | null>(null);
+
+  const mutation = useMutation<AxiosResponse<any>, Error, Dimensions>({
+    mutationFn: (dimensions: Dimensions) => {
       setEnteredDimensions(dimensions);
       return axios.post('/graphql', {
         query: closestProductQuery,
@@ -46,7 +69,7 @@ const CalculatorModal = ({ open, setOpen }) => {
         }
       )
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data) => {
       setSelectedProduct(data.data.data.closestProduct);
     }
   });
@@ -74,7 +97,7 @@ const CalculatorModal = ({ open, setOpen }) => {
                 Enter the length, width, and height of the item you want to ship, and the weight of the item. The calculator will then provide you with the most closely matching product.
               </p>
             </ModalDescription>          
-            <CalculatorForm onSubmit={mutation} />
+            <CalculatorForm onSubmit={mutation.mutate as UseMutateFunction<AxiosResponse<any>, Error, Dimensions>} />
           </>
         ) }
       </ModalContent>

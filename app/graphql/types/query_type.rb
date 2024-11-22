@@ -18,9 +18,6 @@ module Types
       ids.map { |id| context.schema.object_from_id(id, context) }
     end
 
-    # Add root-level fields here.
-    # They will be entry points for queries on your schema.
-
     field :products, [Types::ProductType], null: false do
       argument :limit, Integer, required: false, default_value: 10
       argument :offset, Integer, required: false, default_value: 0  
@@ -41,14 +38,7 @@ module Types
     end
 
     def closest_product(length:, width:, height:, weight:)
-      Product.all.min_by do |product|
-        (
-          (product.length - length).abs +
-          (product.width - width).abs +
-          (product.height - height).abs +
-          (product.weight - weight).abs
-        )
-      end
+      Product.closest_match(length, width, height, weight)
     end    
 
     field :product, Types::ProductType, null: true do
@@ -57,6 +47,12 @@ module Types
 
     def product(id:)
       Product.find(id)
+    end
+
+    field :calculator_results, [Types::CalculatorResultType], null: false
+
+    def calculator_results
+      CalculatorResult.all
     end
   end
 end

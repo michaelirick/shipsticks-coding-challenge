@@ -1,7 +1,6 @@
 import { FC, useState } from 'react';
 import { Container, Table, Header, Icon, Button } from 'semantic-ui-react';
 import { useQuery } from '@tanstack/react-query';
-
 import axios from 'axios';
 import useCsrf from 'hooks/use_csrf';
 import SavedResultsModal from './modal';
@@ -20,10 +19,20 @@ const productsQuery = `
   }
 `;
 
+interface Product {
+  id: string;
+  name: string;
+  type: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+}
+
 const ProductsList: FC = () => {
   const [open, setOpen] = useState(false);
-  const [productId, setProductId] = useState(null);
-  const { isPending, error, data } = useQuery({
+  const [productId, setProductId] = useState<string | null>(null);
+  const { isPending, error, data } = useQuery<Product[]>({
     queryKey: ['products'],
     queryFn: async () => {
       return axios.post('/graphql', {
@@ -41,7 +50,7 @@ const ProductsList: FC = () => {
     }
   });
 
-  const onViewSavedResults = (id) => {
+  const onViewSavedResults = (id: string) => {
     setProductId(id);
     setOpen(true);
   }
@@ -65,9 +74,9 @@ const ProductsList: FC = () => {
         <Table.Body>
           {isPending && (
             <Table.Row>
-              <Table.Cell colSpan="6">Loading...</Table.Cell>
-              </Table.Row>
-              )}
+              <Table.Cell colSpan="7">Loading...</Table.Cell>
+            </Table.Row>
+          )}
           {data?.map((product) => (
             <Table.Row key={product.id}>
               <Table.Cell>{product.name}</Table.Cell>

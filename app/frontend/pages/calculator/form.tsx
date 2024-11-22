@@ -5,15 +5,21 @@ import {
   FormInput
 } from 'semantic-ui-react';
 
-const CalculatorForm = ({onSubmit}) => {
-  const [length, setLength] = React.useState('');
-  const [width, setWidth] = React.useState('');
-  const [height, setHeight] = React.useState('');
-  const [weight, setWeight] = React.useState('');
+interface CalculatorFormProps {
+  onSubmit: {
+    mutate: (data: { length: number; width: number; height: number; weight: number }) => void;
+  };
+}
 
-  const handleSubmit = (e) => {
+const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
+  const [length, setLength] = React.useState<string>('');
+  const [width, setWidth] = React.useState<string>('');
+  const [height, setHeight] = React.useState<string>('');
+  const [weight, setWeight] = React.useState<string>('');
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit.mutate({
+    onSubmit({
       length: parseInt(length),
       width: parseInt(width),
       height: parseInt(height),
@@ -27,25 +33,25 @@ const CalculatorForm = ({onSubmit}) => {
         label="Length"
         type="number"
         value={length}
-        onChange={(e) => setLength(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLength(e.target.value)}
       />
       <FormInput
         label="Width"
         type="number"
         value={width}
-        onChange={(e) => setWidth(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWidth(e.target.value)}
       />
       <FormInput
         label="Height"
         type="number"
         value={height}
-        onChange={(e) => setHeight(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHeight(e.target.value)}
       />
       <FormInput
         label="Weight"
         type="number"
         value={weight}
-        onChange={(e) => setWeight(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeight(e.target.value)}
       />
 
       <Button type="submit">Calculate</Button>

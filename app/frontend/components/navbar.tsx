@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
 import { Menu, Container, Button, Icon } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-import CalculatorModal from 'pages/calculator/modal';
+import React from 'react';
 
-const Navbar = ({calculatorOpen, setCalculatorOpen}) => {
+interface NavbarProps {
+  calculatorOpen: boolean;
+  setCalculatorOpen: (open: boolean) => void;
+}
 
+const Navbar: React.FC<NavbarProps> = ({ calculatorOpen, setCalculatorOpen }) => {
   return (
     <Menu inverted>
       <Container>

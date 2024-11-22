@@ -13,4 +13,5 @@ class CalculatorResult
 
   # Validations
   validates :length, :width, :height, :weight, presence: true
+  validates :length, :width, :height, :weight, numericality: { greater_than: 0 }
 end
