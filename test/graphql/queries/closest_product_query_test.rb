@@ -35,6 +35,15 @@ class ClosestProductQueryTest < ActionDispatch::IntegrationTest
       height: 15,
       weight: 50
     )
+
+    @product3 = Product.create!(
+      name: "Extra Large Package",
+      type: "Luggage",
+      length: 72,
+      width: 24,
+      height: 18,
+      weight: 60
+    )
   end
 
   test "retrieves the closest matching product" do
@@ -53,8 +62,8 @@ class ClosestProductQueryTest < ActionDispatch::IntegrationTest
     response_data = JSON.parse(@response.body)
 
     product_data = response_data['data']['closestProduct']
-    assert_equal @product1.id.to_s, product_data['id']
-    assert_equal "Small Package", product_data['name']
+    assert_equal @product2.id.to_s, product_data['id']
+    assert_equal "Large Package", product_data['name']
   end
 
   test "returns nil when no products exist" do

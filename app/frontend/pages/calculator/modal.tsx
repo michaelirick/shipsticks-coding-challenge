@@ -46,7 +46,7 @@ const CalculatorModal = ({ open, setOpen }) => {
         }
       )
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data) => {
       setSelectedProduct(data.data.data.closestProduct);
     }
   });

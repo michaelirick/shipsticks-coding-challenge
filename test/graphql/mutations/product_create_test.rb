@@ -59,10 +59,37 @@ class ProductCreateTest < ActionDispatch::IntegrationTest
          params: { query: @mutation, variables: variables }.to_json,
          headers: { 'Content-Type' => 'application/json' }
 
-    assert_response :success
+    assert_response :unprocessable_entity
     response_data = JSON.parse(@response.body)
 
     assert_nil response_data['data']
     assert_match "Variable $input of type ProductCreateInput! was provided invalid value for type (Expected value to not be null), length (Expected value to not be null), width (Expected value to not be null), height (Expected value to not be null), weight (Expected value to not be null)", response_data['errors'][0]['message']
   end  
+
+  test "fails to create a product with invalid field values" do
+    variables = {
+      input: {
+        name: "Invalid Package",
+        type: "Invalid",
+        length: 0,
+        width: 0,
+        height: 0,
+        weight: 0
+      }
+    }
+
+    post '/graphql',
+         params: { query: @mutation, variables: variables }.to_json,
+         headers: { 'Content-Type' => 'application/json' }
+
+    assert_response :unprocessable_entity
+    response_data = JSON.parse(@response.body)
+
+    assert_nil response_data['data']['productCreate']
+    assert_match "Error creating product", response_data['errors'][0]['message']
+    assert_includes response_data['errors'][0]['extensions']['length'], "must be greater than 0"
+    assert_includes response_data['errors'][0]['extensions']['width'], "must be greater than 0"
+    assert_includes response_data['errors'][0]['extensions']['height'], "must be greater than 0"
+    assert_includes response_data['errors'][0]['extensions']['weight'], "must be greater than 0"
+  end
 end

@@ -94,7 +94,7 @@ class ProductUpdateTest < ActionDispatch::IntegrationTest
          params: { query: @mutation, variables: variables }.to_json,
          headers: { 'Content-Type' => 'application/json' }
 
-    assert_response :success
+    assert_response :unprocessable_entity
     response_data = JSON.parse(@response.body)
 
     assert_nil response_data['data']['productUpdate']
