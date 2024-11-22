@@ -1,34 +1,21 @@
 import React, { useState } from 'react';
 import { Menu, Container, Button, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import CalculatorModal from 'pages/calculator/modal';
 
-const Navbar = () => {
-  const [activeItem, setActiveItem] = useState('home');
-
-  const handleItemClick = (e, { name }) => setActiveItem(name);
+const Navbar = ({calculatorOpen, setCalculatorOpen}) => {
 
   return (
     <Menu inverted>
       <Container>
         <Menu.Item
-          as={Link}
-          to="/"
-          name="home"
-          active={activeItem === 'home'}
-          onClick={handleItemClick}
+          as={Button}
+          name="Launch Calculator"
+          active={calculatorOpen}
+          onClick={() => setCalculatorOpen(true)}
         >
-          <Icon name="home" />
-          Home
-        </Menu.Item>
-        <Menu.Item
-          as={Link}
-          to="/products"
-          name="products"
-          active={activeItem === 'products'}
-          onClick={handleItemClick}
-        >
-          <Icon name="shop" />
-          Products
+          <Icon name="calculator" />
+          Launch Calculator
         </Menu.Item>
       </Container>
     </Menu>

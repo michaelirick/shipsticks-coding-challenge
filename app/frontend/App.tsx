@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
   QueryClient,
@@ -7,31 +7,20 @@ import {
 
 import Navbar from './components/navbar';
 import ProductsList from './pages/products/list';
+import CalculatorModal from './pages/calculator/modal';
 
 import 'semantic-ui-css/semantic.min.css';
-
-
-const Home: FC = () => {
-  return (
-    <div>
-      <h1>Home</h1>
-    </div>
-)}
-
-
 
 const queryClient = new QueryClient();
 
 const App: FC = () => {
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<ProductsList />} />
-        </Routes>
-      </Router>
+      <Navbar setCalculatorOpen={setCalculatorOpen} />
+      <ProductsList />
+      <CalculatorModal open={calculatorOpen} setOpen={setCalculatorOpen} />
     </QueryClientProvider>
 )};
 
