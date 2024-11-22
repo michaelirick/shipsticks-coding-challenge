@@ -31,7 +31,11 @@ const calculatorResultSaveQuery = `
   }
 `;
 
-const Errors = ({errors}) => {
+interface ErrorsProps {
+  errors: Record<string, string>;
+}
+
+const Errors: React.FC<ErrorsProps> = ({ errors }) => {
   return (
     <Message negative>
       <MessageHeader>Errors</MessageHeader>
@@ -46,8 +50,24 @@ const Errors = ({errors}) => {
   )
 }
 
-const SelectedProduct = ({id, name, type, length, width, height, weight, dimensions}) => {
-  const [errors, setErrors] = React.useState({});
+interface SelectedProductProps {
+  id: string;
+  name: string;
+  type: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+  dimensions: {
+    length: number;
+    width: number;
+    height: number;
+    weight: number;
+  };
+}
+
+const SelectedProduct: React.FC<SelectedProductProps> = ({ id, name, type, length, width, height, weight, dimensions }) => {
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
   const mutation = useMutation({
     mutationFn: () => {
       return axios.post('/graphql', {
@@ -70,7 +90,7 @@ const SelectedProduct = ({id, name, type, length, width, height, weight, dimensi
         }
       )
     },
-    onError: (error) => {
+    onError: (error: any) => {
       setErrors(error.response.data.errors[0].extensions);
     }
   });
@@ -93,8 +113,8 @@ const SelectedProduct = ({id, name, type, length, width, height, weight, dimensi
             {mutation.isSuccess && <p>Results saved</p>}
             {mutation.isIdle && (
               <Button primary floated='right' onClick={() => mutation.mutate()}>
+                <Icon name='save' />
                 Save Results
-                <Icon name='right save' />
               </Button>          
             )}
           </Item.Extra>

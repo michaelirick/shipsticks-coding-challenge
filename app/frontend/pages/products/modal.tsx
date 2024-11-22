@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ModalHeader,
   ModalContent,
@@ -23,6 +23,7 @@ const productQuery = `
       height
       weight
       calculatorResults {
+        id
         length
         width
         height
@@ -32,9 +33,33 @@ const productQuery = `
   }
 `;
 
+interface SavedResultsModalProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  productId: string;
+}
 
-const SavedResultsModal = ({ open, setOpen, productId }) => {
-  const { isPending, error, data } = useQuery({
+interface Product {
+  id: string;
+  name: string;
+  type: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+  calculatorResults: CalculatorResult[];
+}
+
+interface CalculatorResult {
+  id: string;
+  length: number;
+  width: number;
+  height: number;
+  weight: number;
+}
+
+const SavedResultsModal: React.FC<SavedResultsModalProps> = ({ open, setOpen, productId }) => {
+  const { data } = useQuery<Product>({
     queryKey: ['product', { id: productId }],
     queryFn: async () => {
       return axios.post('/graphql', {
@@ -70,7 +95,7 @@ const SavedResultsModal = ({ open, setOpen, productId }) => {
           </Table.Header>
           <Table.Body>
             {data && data.calculatorResults.length === 0 && (
-              <Table.Row>
+              <Table.Row key="none">
                 <Table.Cell colSpan="4">No saved results</Table.Cell>
               </Table.Row>
             )}
