@@ -56,6 +56,7 @@ class SaveCalculatorResultTest < ActionDispatch::IntegrationTest
     assert_equal 42, calculator_result_data['weight']
     assert_equal @product.id.to_s, calculator_result_data['product']['id']
     assert_equal @product.name, calculator_result_data['product']['name']
+    assert_not_nil CalculatorResult.find(calculator_result_data['id'])
   end
 
   test "does not save a calculator result without an associated product" do

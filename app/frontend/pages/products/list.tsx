@@ -1,9 +1,10 @@
-import { FC } from 'react';
-import { Container, Table, Header } from 'semantic-ui-react';
+import { FC, useState } from 'react';
+import { Container, Table, Header, Icon, Button } from 'semantic-ui-react';
 import { useQuery } from '@tanstack/react-query';
 
 import axios from 'axios';
 import useCsrf from 'hooks/use_csrf';
+import SavedResultsModal from './modal';
 
 const productsQuery = `
   query GetAllProducts($type: String, $limit: Int, $offset: Int) {
@@ -20,13 +21,15 @@ const productsQuery = `
 `;
 
 const ProductsList: FC = () => {
+  const [open, setOpen] = useState(false);
+  const [productId, setProductId] = useState(null);
   const { isPending, error, data } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       return axios.post('/graphql', {
         query: productsQuery,
         variables: {
-          limit: 10,
+          limit: 20,
           offset: 0
         }
       }, {
@@ -38,9 +41,15 @@ const ProductsList: FC = () => {
     }
   });
 
+  const onViewSavedResults = (id) => {
+    setProductId(id);
+    setOpen(true);
+  }
+
   return (
     <Container>
       <Header as='h1'>Products</Header>
+      <SavedResultsModal productId={productId} open={open} setOpen={setOpen} />
       <Table celled>
         <Table.Header>
           <Table.Row>
@@ -50,6 +59,7 @@ const ProductsList: FC = () => {
             <Table.HeaderCell>Width</Table.HeaderCell>
             <Table.HeaderCell>Height</Table.HeaderCell>
             <Table.HeaderCell>Weight</Table.HeaderCell>
+            <Table.HeaderCell>Actions</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -66,6 +76,12 @@ const ProductsList: FC = () => {
               <Table.Cell>{product.width}</Table.Cell>
               <Table.Cell>{product.height}</Table.Cell>
               <Table.Cell>{product.weight}</Table.Cell>
+              <Table.Cell>
+                <Button onClick={() => onViewSavedResults(product.id)}>
+                  <Icon name="eye" />
+                  Saved Results
+                </Button>
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
