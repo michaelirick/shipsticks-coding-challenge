@@ -222,3 +222,108 @@ To stop the app and shut down all containers:
 ```bash
 docker-compose down
 ```
+
+---
+
+#### **7. Running Tests**
+
+To run the test suite for the Rails API, use the following command:
+```bash
+docker-compose exec shipsticks-coding-challenge_rails-api bundle exec rails test
+```
+
+## **Notes on Design Decisions and Considerations**
+
+This section outlines key design choices made during the development of the application, highlighting the rationale behind them and the considerations they address.
+
+---
+
+#### **1. GraphQL Error Handling**
+**Design Decision**: Modified GraphQL to return non-200 HTTP status codes for errors.
+
+- **Why**:
+  - By default, GraphQL always returns a `200 OK` status, even when errors are present in the response. While this adheres to the GraphQL spec, it can make error handling more complex for clients, as they must inspect the `errors` field in the response body.
+  - To simplify error handling, especially in cases where the client is expected to take different actions based on the type of error, this app customizes the server behavior to return appropriate HTTP status codes (e.g., `400 Bad Request`, `500 Internal Server Error`) for specific errors.
+
+- **Implementation**:
+  - Errors in resolvers are wrapped in `GraphQL::ExecutionError` with additional metadata.
+  - A custom middleware inspects the response and adjusts the HTTP status based on error types.
+
+- **Considerations**:
+  - This approach improves compatibility with tools and libraries that rely on HTTP status codes for error handling.
+  - Developers must ensure the client application still handles the `errors` field in the GraphQL response for granular error details.
+
+---
+
+#### **2. State and Query Management with React Query (Tanstack Query)**
+**Design Decision**: Used React Query (now Tanstack Query) to manage application state and API queries.
+
+- **Why**:
+  - React Query simplifies server-state management, providing features like caching, automatic retries, and background updates.
+  - It eliminates the need for manually managing loading, error, and success states, reducing boilerplate code in components.
+
+- **Implementation**:
+  - Queries are defined using `useQuery` for fetching data and `useMutation` for performing GraphQL mutations.
+  - Caching is leveraged to reduce redundant API calls, improving performance and user experience.
+
+- **Considerations**:
+  - React Query integrates seamlessly with GraphQL, but proper cache keys must be used to ensure consistent updates.
+  - Background updates and automatic retries make the app more robust, but retry policies need to be carefully configured to avoid overloading the server.
+
+---
+
+#### **3. Modularity and Scalability**
+**Design Decision**: The app is structured to support modularity and future scalability.
+
+- **Why**:
+  - A modular architecture ensures that new features can be added with minimal impact on existing code.
+  - By separating concerns between backend (Rails API), frontend (React), and state management (React Query), the app remains maintainable as complexity grows.
+
+- **Considerations**:
+  - Each module is designed with clear responsibilities, reducing coupling and improving testability.
+  - Dependency injection and hooks are used to manage shared logic and configurations efficiently.
+
+---
+
+#### **4. Developer Experience**
+**Design Decision**: Prioritized tools and patterns that improve developer productivity.
+
+- **Why**:
+  - Efficient development tools and clear patterns help maintain consistency across the codebase and reduce onboarding time for new developers.
+
+- **Examples**:
+  - **GraphQL Codegen**: Used to generate TypeScript types for GraphQL operations, ensuring type safety.
+  - **Docker**: Simplifies environment setup and ensures consistency between local and production environments.
+
+- **Considerations**:
+  - Emphasis was placed on choosing tools that integrate well with each other, minimizing conflicts and compatibility issues.
+  - Documentation is provided to guide developers in understanding and using the design patterns effectively.
+
+#### **5. Use of Semantic UI React**
+
+**Design Decision**: Utilized Semantic UI React as the primary component library for building the frontend user interface.
+
+- **Why**:
+  - **Pre-Built Components**: Semantic UI React provides a rich set of ready-to-use components, such as buttons, forms, modals, and grids, enabling rapid development.
+  - **Declarative API**: Its declarative API aligns well with React's component-based architecture, promoting clean and maintainable code.
+  - **Customizability**: Components can be easily customized using props and theming, allowing for flexibility while maintaining a consistent design.
+
+- **Implementation**:
+  - **Component Usage**:
+    - Modals were used for features like the dimensional calculator.
+    - Grid layouts ensured responsive and consistent layouts across pages.
+  - **Styling**:
+    - Default Semantic UI styles were applied for rapid prototyping.
+    - Custom theming was implemented where necessary to meet specific design requirements.
+
+- **Considerations**:
+  - **Accessibility**: While Semantic UI React provides accessible components, additional enhancements were made to ensure compliance with accessibility standards where necessary.
+  - **Custom Theming**: Deeper customizations leveraged the Semantic UI theming system to align with project branding.
+  - **Performance**: The built-in functionality of Semantic UI React components was carefully evaluated to avoid performance overhead.
+  - **Consistency**: Using a centralized component library ensured visual and functional consistency across the application.
+
+By leveraging Semantic UI React, the app achieves a polished and professional user interface while streamlining development through reusable, pre-styled components.
+
+---
+
+These design decisions were made with a focus on clarity, maintainability, and scalability while ensuring a smooth developer and user experience.
