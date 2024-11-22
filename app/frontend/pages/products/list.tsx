@@ -1,8 +1,9 @@
 import { FC } from 'react';
-import { Container, Table } from 'semantic-ui-react';
+import { Container, Table, Header } from 'semantic-ui-react';
 import { useQuery } from '@tanstack/react-query';
 
 import axios from 'axios';
+import useCsrf from 'hooks/use_csrf';
 
 const productsQuery = `
   query GetAllProducts($type: String, $limit: Int, $offset: Int) {
@@ -22,7 +23,6 @@ const ProductsList: FC = () => {
   const { isPending, error, data } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       return axios.post('/graphql', {
         query: productsQuery,
         variables: {
@@ -32,17 +32,15 @@ const ProductsList: FC = () => {
       }, {
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': csrf
+          'X-CSRF-Token': useCsrf()
         }
       }).then((res) => res.data.data.products);
     }
   });
 
-  console.log(data);
-
   return (
     <Container>
-      <h1>Products List</h1>
+      <Header as='h1'>Products</Header>
       <Table celled>
         <Table.Header>
           <Table.Row>
