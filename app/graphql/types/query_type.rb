@@ -50,5 +50,13 @@ module Types
         )
       end
     end    
+
+    field :product, Types::ProductType, null: true do
+      argument :id, ID, required: true
+    end
+
+    def product(id:)
+      Product.find(id)
+    end
   end
 end

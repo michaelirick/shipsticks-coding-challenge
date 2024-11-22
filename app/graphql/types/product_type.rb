@@ -11,5 +11,7 @@ module Types
     field :width, Integer, null: false, description: "The width of the product in inches"
     field :height, Integer, null: false, description: "The height of the product in inches"
     field :weight, Integer, null: false, description: "The weight of the product in pounds"
+
+    field :calculator_results, [Types::CalculatorResultType], null: true
   end
 end

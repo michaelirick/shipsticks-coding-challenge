@@ -33,7 +33,7 @@ const SelectedProduct = ({id, name, type, length, width, height, weight, dimensi
             width: dimensions.width,
             height: dimensions.height,
             weight: dimensions.weight,
-            product_id: id
+            productId: id
           }
         }
       },
