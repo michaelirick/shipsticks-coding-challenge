@@ -21,11 +21,14 @@ module Types
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
 
-    # TODO: remove me
-    field :test_field, String, null: false,
-      description: "An example field added by the generator"
-    def test_field
-      "Hello World!"
+    field :products, [Types::ProductType], null: false do
+      argument :limit, Integer, required: false, default_value: 10
+      argument :offset, Integer, required: false, default_value: 0  
+      argument :type, String, required: false
+    end
+    
+    def products(type: nil, limit:, offset:)
+      (type ? Product.where(type: type) : Product.all).limit(limit).offset(offset)
     end
   end
 end
