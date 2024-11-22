@@ -13,6 +13,7 @@ import { useMutation, UseMutateFunction } from '@tanstack/react-query';
 import useCsrf from 'hooks/use_csrf';
 import axios, { AxiosResponse } from 'axios';
 import SelectedProduct from './selected_product';
+import Errors from 'components/errors';
 
 const closestProductQuery = `
   query GetClosestProduct($length: Int!, $width: Int!, $height: Int!, $weight: Int!) {
@@ -53,6 +54,7 @@ interface Product {
 const CalculatorModal: React.FC<CalculatorModalProps> = ({ open, setOpen }) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [enteredDimensions, setEnteredDimensions] = useState<Dimensions | null>(null);
+  const [errors, setErrors] = useState<Record<string, string> | null>(null);
 
   const mutation = useMutation<AxiosResponse<any>, Error, Dimensions>({
     mutationFn: (dimensions: Dimensions) => {
@@ -70,7 +72,14 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ open, setOpen }) => {
       )
     },
     onSuccess: (data) => {
+      if(data.data.data.closestProduct === null) {
+        setErrors({ product: 'No matching product found' });
+        return;
+      }
       setSelectedProduct(data.data.data.closestProduct);
+    },
+    onError: (error) => {
+      console.log('error', error);
     }
   });
 
@@ -98,6 +107,7 @@ const CalculatorModal: React.FC<CalculatorModalProps> = ({ open, setOpen }) => {
               </p>
             </ModalDescription>          
             <CalculatorForm onSubmit={mutation.mutate as UseMutateFunction<AxiosResponse<any>, Error, Dimensions>} />
+            {errors && <Errors errors={errors} />}
           </>
         ) }
       </ModalContent>
