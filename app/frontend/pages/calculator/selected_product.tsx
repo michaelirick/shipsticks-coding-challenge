@@ -3,15 +3,13 @@ import {
   Item,
   ItemGroup,
   Button,
-  Icon,
-  MessageItem, 
-  MessageList,
-  MessageHeader,
-  Message
-} from "semantic-ui-react"
+  Icon
+} from "semantic-ui-react";
+
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import useCsrf from "hooks/use_csrf";
+import Errors from "components/errors";
 
 const calculatorResultSaveQuery = `
   mutation CalculatorResultSave($input: CalculatorResultSaveInput!) {
@@ -30,25 +28,6 @@ const calculatorResultSaveQuery = `
     }
   }
 `;
-
-interface ErrorsProps {
-  errors: Record<string, string>;
-}
-
-const Errors: React.FC<ErrorsProps> = ({ errors }) => {
-  return (
-    <Message negative>
-      <MessageHeader>Errors</MessageHeader>
-      <MessageList>
-        {Object.keys(errors).map((key) => {
-          return (
-            <MessageItem key={key}>{key}: {errors[key]}</MessageItem>
-          )
-        })}
-      </MessageList>
-    </Message>
-  )
-}
 
 interface SelectedProductProps {
   id: string;

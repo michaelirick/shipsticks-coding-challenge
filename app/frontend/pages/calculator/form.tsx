@@ -54,7 +54,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({ onSubmit }) => {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeight(e.target.value)}
       />
 
-      <Button type="submit">Calculate</Button>
+      <Button type="submit" disabled={length.length === 0 || width.length === 0 || height.length === 0 || weight.length === 0}>
+        Calculate
+      </Button>
     </Form>
   );
 };
